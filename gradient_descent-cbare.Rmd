@@ -1,0 +1,32 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Source: https://www.r-bloggers.com/linear-regression-by-gradient-descent/
+
+In Andrew Ng’s Machine Learning class, the first section demonstrates gradient descent by using it on a familiar problem, that of fitting a linear function to data.
+
+Let’s start off, by generating some bogus data with known characteristics. Let’s make y just a noisy version of x. Let’s also add 3 to give the intercept term something to do.
+
+```{r}
+# generate random data in which y is a noisy function of x
+x <- runif(1000, -5, 5)
+y <- x + rnorm(1000) + 3
+
+# fit a linear model
+res <- lm( y ~ x )
+print(res)
+```
+
+Fitting a linear model, we should get a slope of 1 and an intercept of 3. Sure enough, we get pretty close. Let’s plot it and see how it looks.
+
+```{r}
+# plot the data and the model
+plot(x,y, col=rgb(0.2,0.4,0.6,0.4), main='Linear regression by gradient descent')
+abline(res, col='blue')
+
+```
+## Using Gradient Descent for Linear Regression
+As a learning exercise, we’ll do the same thing using gradient descent. As discussed previously, the main idea is to take the partial derivative of the cost function with respect to theta. That gradient, multiplied by a learning rate, becomes the update rule for the estimated values of the parameters. Iterate and things should converge nicely.
+
