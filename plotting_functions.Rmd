@@ -1,0 +1,145 @@
+---
+title: "Plotting functions"
+output: html_notebook
+---
+
+```{r}
+## knitr configuration: http://yihui.name/knitr/options#chunk_options
+opts_chunk$set(comment = "", error= TRUE, warning = FALSE, message = FALSE,
+               tidy = FALSE, cache = F, echo = T,
+               fig.width = 6, fig.height = 6)
+
+## R configuration
+options(width = 116, scipen = 5)
+```
+
+
+```{r}
+library(ggplot2)
+
+p <- ggplot(data = data.frame(x = 0), mapping = aes(x = x))
+```
+
+```{r}
+scale_color_manual(name = "Functions", 
+                   values = c("fun.1" = "blue", "fun.2" = "red", "fun.3" = "green"), 
+                   labels = c("X^2 + X", "-X + 10", "3X + 2"))
+```
+
+
+```{r}
+fun.1 <- function(x) x^2 + x
+```
+
+
+
+```{r}
+p + 
+  stat_function(fun = fun.1) + 
+  xlim(-5,5)
+```
+
+```{r}
+p + layer(geom = "path")
+```
+
+
+```{r}
+p + layer(geom = "path", 
+          stat = "function",
+          data = fun.1,
+          )
+```
+
+
+```{r}
+p + layer(geom = "path",        # Default. Can be omitted.
+          stat = "function", 
+          
+          position = "identity",          # Give function
+          fun = fun.1,
+          mapping = aes(color = "fun.1") # Give a meaningful name to color
+          ) +
+    scale_x_continuous(limits = c(-5,5)) +
+    scale_color_manual(name = "Function", values = c("blue"))
+```
+
+```{r}
+fun.2 <- function(x) -1 * x + 10
+fun.3 <- function(x) 3 * x + 2
+```
+
+```{r}
+p +
+    layer(stat = "function",
+          fun = fun.1,
+          mapping = aes(color = "fun.1")
+          ) +
+    layer(stat = "function",
+          fun = fun.2,
+          mapping = aes(color = "fun.2")
+          ) +
+    layer(stat = "function",
+          fun = fun.3,
+          mapping = aes(color = "fun.3")
+          ) +
+    scale_x_continuous(limits = c(-5, 5)) +
+    scale_color_manual(name = "Functions",
+                       values = c("blue", "red", "green"), # Color specification
+                       labels = c("X^2 + X", "-X + 10", "3X + 2"))
+```
+
+
+```{r}
+# geom calls are just a short cut for layer
+# ggplot(mpg, aes(displ, hwy)) + geom_point()
+# shortcut for
+ggplot(mpg, aes(displ, hwy)) +
+  layer(geom = "point", 
+        stat = "identity", 
+        position = "identity",    
+        params = list(na.rm = FALSE)
+  )
+
+# use a function as data to plot a subset of global data
+ggplot(mpg, aes(displ, hwy)) +
+  layer(geom = "point", 
+        stat = "identity", 
+        position = "identity", 
+        data = tail, 
+        params = list(na.rm = FALSE)
+  )
+```
+
+
+```{r}
+library(ggplot2)
+df<-data.frame(time=as.factor(c(1,1,2,2,3,3,4,4,5,5)), value=as.numeric(c(7, 8, 9, 10, 10, 11, 10.5, 11.4, 10.9, 11.6)), side=as.factor(c("E","F","E","F","E","F","E","F","E","F")))
+
+p <- ggplot(df, aes(time,value, group=side, colour=side)) + geom_line(size=1)
+p <- p+geom_point(size=4)
+p
+```
+```{r}
+p <- ggplot(data = data.frame(x = 0), mapping = aes(x = x))
+
+p + 
+  stat_function(fun = fun.1) + 
+  xlim(-5,5) + 
+  geom_point(fun = fun.1)
+```
+
+```{r}
+p9 <- ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
+        stat_function(fun = dnorm, args = list(0.2, 0.1)) +
+        stat_function(fun = dnorm, args = list(0.7, 0.05))
+p9
+```
+```{r}
+p9 <- ggplot(data.frame(x = c(0, 1)), aes(x = x))
+
+p9 + layer(stat = "function",
+           fun = dnorm, 
+           args = list(0.2, 0.1))
+```
+
