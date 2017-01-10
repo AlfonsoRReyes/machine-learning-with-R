@@ -2,10 +2,10 @@
 title: "Gradient Descent in R. Minimization of functions"
 author: "Matt Bogard"
 output:
-  pdf_document: 
-    latex_engine: xelatex
-  html_notebook: default
   html_document: default
+  html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
 ---
 
 ```{r setup, include=FALSE, error=TRUE, message=FALSE}
@@ -14,7 +14,9 @@ knitr::opts_chunk$set(echo = TRUE, comment = NA, error = TRUE)
 
 Source: http://econometricsense.blogspot.com/2011/11/gradient-descent-in-r.html
 
-In a previous post I discussed the concept of gradient descent.  Given some recent work in the online machine learning course offered at Stanford,  I'm going to extend that discussion with an actual example using R-code  (the actual code is adapted from a computer science course at Colorado State, and the example is verbatim from the notes here: http://www.cs.colostate.edu/~anderson/cs545/Lectures/week6day2/week6day2.pdf ) 
+In a previous post I discussed the concept of gradient descent.  Given some recent work in the online machine learning course offered at Stanford,  I'm going to extend that discussion with an actual example using R-code  (the actual code is adapted from a computer science course at Colorado State, and the example is verbatim from the notes here:
+
+http://www.cs.colostate.edu/~anderson/cs545/Lectures/week6day2/week6day2.pdf ) 
 
 Suppose you want to minimize the function 1.2 * (x-2)^2 + 3.2. Basic calculus requires that we find the 1st derivative and solve for the value of x such that f'(x) = 0. This is easy enough to do, f'(x) = 2*1.2*(x-2). Its easy to see that a value of 2 satisfies f'(x) =  0. Given that the second order conditions hold, this is a minimum.
 
@@ -39,9 +41,9 @@ f <-  function(x) {
  
 # plot the function 
 plot(xs, f (xs), 
-     type="l", 
-     xlab="x", 
-     ylab=expression(1.2(x-2)^2 +3.2))
+     type = "l", 
+     xlab = "x", 
+     ylab = expression(1.2(x-2)^2 +3.2))
  
 # calculate the gradient df/dx
 grad <- function(x){
@@ -53,8 +55,8 @@ grad <- function(x){
 # The actual solution we will approximate with gradeint descent
 # is  x = 2 as depicted in the plot below
  
-lines (c (2,2), c (3,8), col="red",lty=2)
-text (2.1,7, "Closedform solution",col="red",pos=4)
+lines (c(2,2), c(3,8), col="green", lty=2)         
+text (2.1,7, "Closed-form solution", col="red", pos=4)
 
 
 
@@ -72,9 +74,18 @@ for (step in 1:100) {
 }
  
 lines (xtrace, ftrace, type="b", col="blue")
-text (0.5, 6, "Gradient Descent", col="blue",pos= 4)
+text (0.5, 6, "Gradient Descent", col="blue", pos= 4)
  
 # print final value of x
 print(x) # x converges to 2.0
+```
+
+```{r}
+plot(xs, f (xs), xlim = c(1.5, 2.5))
+lines (xtrace, ftrace, type="b", col="blue")
+```
+```{r}
+plot(xs, f (xs), xlim = c(1.9, 2.1))
+lines (xtrace, ftrace, type="b", col="blue")
 ```
 
