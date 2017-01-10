@@ -57,8 +57,6 @@ $$
 $$
 and the gradient descent algorithm becomes:
 
-
-
 $$
 \begin{aligned}
 \text{repeat until convergence} \; \{ \\
@@ -67,7 +65,6 @@ $$
 \end{aligned}
 $$
 
-
 The following R code implements this algorithm and achieves the same results we got from the matrix programming or the canned R or SAS routines before. The concept of `feature scaling` is introduced, which is a method of standardizing the independent variables or features. This improves the convergence speed of the algorithm. Additional code intuitively investigates the concept of convergence. Ideally, the algorithm should stop once changes in the cost function become small as we update the values in $\theta$.
 
 This is minimized by solving for the values of $\theta$ that set the derivative to zero. In some cases this can be done analytically with calculus and a little algebra, but this can also be done (especially when complex functions are involved) via `gradient descent`. Recall from before, the basic gradient descent algorithm involves a learning rate $\alpha$ and an update function that utilizes the 1st derivative or gradient $f'(.)$. 
@@ -75,6 +72,17 @@ This is minimized by solving for the values of $\theta$ that set the derivative 
 The basic algorithm is as follows:
 
 ```{r}
+#  -------------------------------------------------------------------------------
+# |PROGRAM NAME: gradient_descent_OLS_R
+# |DATE: 11/27/11
+# |CREATED BY: MATT BOGARD 
+# |PROJECT FILE:              
+# |-----------------------------------------------------------------------------
+# | PURPOSE: illustration of gradient descent algorithm applied to OLS
+# | REFERENCE: adapted from : http://www.cs.colostate.edu/~anderson/cs545/Lectures/week6day2/week6day2.pdf                
+# |  and http://www.statalgo.com/2011/10/17/stanford-ml-1-2-gradient-descent/
+#  ------------------------------------------------------------------------------
+#
 # get data 
 rm(list = ls(all = TRUE)) # make sure previous work is clear
 
