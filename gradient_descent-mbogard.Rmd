@@ -69,14 +69,16 @@ stepFactor <- 0.6 # learning rate 'alpha'
 
 for (step in 1:100) {
   x <- x - stepFactor * grad(x) # gradient descent update
-  xtrace <- c(xtrace, x) # update for graph
-  ftrace <- c(ftrace, f(x)) # update for graph
+  xtrace <- c(xtrace, x)      # update for graph
+  ftrace <- c(ftrace, f(x))   # update for graph
 }
  
 lines (xtrace, ftrace, type="b", col="blue")
 text (0.5, 6, "Gradient Descent", col="blue", pos= 4)
  
 # print final value of x
+print(length(xtrace))
+print(length(ftrace))
 print(x) # x converges to 2.0
 ```
 
