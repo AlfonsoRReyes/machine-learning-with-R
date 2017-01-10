@@ -1,8 +1,14 @@
 ---
 title: "Regression via Gradient Descent in R"
 author: "Matt Bogard"
-output: html_notebook
+output:
+  html_document: default
+  html_notebook: default
 ---
+
+```{r setup, include=FALSE, error=TRUE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA, error = TRUE)
+```
 
 Source: https://www.r-bloggers.com/regression-via-gradient-descent-in-r/
 
@@ -13,25 +19,32 @@ If you are not going to use a canned routine from R or SAS to estimate a regress
 
 From my earliest gradient descent post, I provided the intuition and notation necessary for performing gradient descent to estimate OLS coefficients. Following the notation from the machine learning course mentioned above, I review the notation  again below.
 
-In machine learning, the regression function $y = \b_0 + \b_1x$ is referred to as a `hypothesis` function:
+In machine learning, the regression function $y = b_0 + b_1x$ is referred to as a `hypothesis` function:
 
-$h_{\theta}(x) = \theta_0 + \theta_1x$
-
+$$
+h_{\theta}(x) = \theta_0 + \theta_1x$
+$$
 The idea, just like in OLS is to minimize the sum of squared errors, represented as a ‘cost function’ in the machine learning context:
 
-$J(\theta_0, \theta_1) =  \frac{1}{2m} \sum (h_{\theta}(x^{(i)}) -y^{(i)})^2$
+$$
+J(\theta_0, \theta_1) =  \frac{1}{2m} \sum (h_{\theta}(x^{(i)}) -y^{(i)})^2
+$$
+This is minimized by solving for the values of theta that set the derivative to zero. In some cases this can be done analytically with calculus and a little algebra, but this can also be done (especially when complex functions are involved) via gradient descent. Recall from before, the basic gradient descent algorithm involves a learning rate $\alpha$ (alpha) and an update function that utilizes the 1st derivitive or gradient $f'$. The basic algorithm is as follows:
 
-This is minimized by solving for the values of theta that set the derivative to zero. In some cases this can be done analytically with calculus and a little algebra, but this can also be done (especially when complex functions are involved) via gradient descent. Recall from before, the basic gradient descent algorithm involves a learning rate ‘alpha’ and an update function that utilizes the 1st derivitive or gradient f'(.). The basic algorithm is as follows:
-
-repeat until convergence { \   
-$\;\;\;\; X_{n+1} = X_n - \alpha \nabla F(X_n)$, or \   
-$\;\;\;\; x:= x - \alpha \nabla F(x)$, or \   
-$\;\;\;\; x \leftarrow x - \alpha \nabla F(x)$, or \   
-} \   
+$$
+\begin{aligned}
+\text{repeat until convergence} \; \{ \\   
+\;\;\;\; X_{n+1} = X_n - \alpha \nabla F(X_n), \text{or} \\   
+\;\;\;\; x:= x - \alpha \nabla F(x), \text{or} \\   
+\;\;\;\; x \leftarrow x - \alpha \nabla F(x), \text{or} \\   
+\} \ 
+\end{aligned}
+$$
 
 For the case of OLS, and the cost function J(theta) depicted above, the gradient descent algorithm can be implemented in pseudo-code as follows:
 
 $$
+\begin{aligned}
 \text{repeat until convergence} \; \{ \\
 \theta_j := \theta_j - \alpha \frac {\partial}{\partial \theta_j} J(\theta_0, \theta_1) \\
 \\
@@ -40,6 +53,7 @@ $$
    \\
     \\
 \frac {\partial}{\partial \theta_j} J(\theta) =  \frac{1}{2m} \sum (h_{\theta}(x^{(i)}) -y^{(i)})^2
+\end{aligned}
 $$
 and the gradient descent algorithm becomes:
 
@@ -54,37 +68,37 @@ $$
 $$
 
 
-The following R -Code implements this algorithm and achieves the same results we got from the matrix programming or the canned R or SAS routines before. The concept of ‘feature scaling’ is introduced, which is a method of standardizing the independent variables or features. This improves the convergence speed of the algorithm. Additional code intuitively investigates the concept of convergence. Ideally, the algorithm should stop once changes in the cost function become small as we update the values in $\theta$.
-This is minimized by solving for the values of theta that set the derivative to zero. In some cases this can be done analytically with calculus and a little algebra, but this can also be done (especially when complex functions are involved) via gradient descent. Recall from before, the basic gradient descent algorithm involves a learning rate ‘alpha’ and an update function that utilizes the 1st derivitive or gradient f'(.). The basic algorithm is as follows:
+The following R code implements this algorithm and achieves the same results we got from the matrix programming or the canned R or SAS routines before. The concept of `feature scaling` is introduced, which is a method of standardizing the independent variables or features. This improves the convergence speed of the algorithm. Additional code intuitively investigates the concept of convergence. Ideally, the algorithm should stop once changes in the cost function become small as we update the values in $\theta$.
+
+This is minimized by solving for the values of $\theta$ that set the derivative to zero. In some cases this can be done analytically with calculus and a little algebra, but this can also be done (especially when complex functions are involved) via `gradient descent`. Recall from before, the basic gradient descent algorithm involves a learning rate $\alpha$ and an update function that utilizes the 1st derivative or gradient $f'(.)$. 
+
+The basic algorithm is as follows:
 
 ```{r}
 # get data 
 rm(list = ls(all = TRUE)) # make sure previous work is clear
-ls()
 
 x0 <- c(1,1,1,1,1) # column of 1's
 x1 <- c(1,2,3,4,5) # original x-values
  
 # create the x- matrix of explanatory variables
- 
 x <- as.matrix(cbind(x0,x1))
  
 # create the y-matrix of dependent variables
- 
 y <- as.matrix(c(3,7,5,11,14))
 m <- nrow(y)
  
 # implement feature scaling
 x.scaled <- x
-x.scaled[,2] <- (x[,2] - mean(x[,2]))/sd(x[,2])
+x.scaled[,2] <- (x[,2] - mean(x[,2])) / sd(x[,2])
  
 # analytical results with matrix algebra
- solve(t(x)%*%x)%*%t(x)%*%y # w/o feature scaling
- solve(t(x.scaled)%*%x.scaled)%*%t(x.scaled)%*%y # w/ feature scaling
+solve(t(x) %*% x) %*% t(x) %*% y                       # w/o feature scaling
+solve(t(x.scaled) %*% x.scaled) %*% t(x.scaled) %*% y  # w/ feature scaling
  
 # results using canned lm function match results above
-summary(lm(y ~ x[, 2])) # w/o feature scaling
-summary(lm(y ~ x.scaled[, 2])) # w/feature scaling
+summary(lm(y ~ x[, 2]))         # w/o feature scaling
+summary(lm(y ~ x.scaled[, 2]))  # w/feature scaling
  
 # define the gradient function dJ/dtheata: 1/m * (h(x)-y))*x where h(x) = x*theta
 # in matrix form this is as follows:
@@ -95,21 +109,21 @@ grad <- function(x, y, theta) {
  
 # define gradient descent update algorithm
 grad.descent <- function(x, maxit){
-    theta <- matrix(c(0, 0), nrow=1) # Initialize the parameters
- 
-    alpha = .05 # set learning rate
-    for (i in 1:maxit) {
-      theta <- theta - alpha  * grad(x, y, theta)   
-    }
- return(theta)
+  theta <- matrix(c(0, 0), nrow=1) # Initialize the parameters
+  
+  alpha = .05 # set learning rate
+  for (i in 1:maxit) {
+    theta <- theta - alpha  * grad(x, y, theta)   
+  }
+  return(theta)
 }
  
  
 # results without feature scaling
-print(grad.descent(x,1000))
+print(grad.descent(x, 1000))
  
 # results with feature scaling
-print(grad.descent(x.scaled,1000))
+print(grad.descent(x.scaled, 1000))
  
 # ----------------------------------------------------------------------- 
 # cost and convergence intuition
@@ -122,17 +136,17 @@ print(grad.descent(x.scaled,1000))
 # iterations or change the learning rate 'alpha' to speed up convergence
  
 # get results from gradient descent
-beta <- grad.descent(x,1000)
+beta <- grad.descent(x, 1000)
  
 # define the 'hypothesis function'
-h <- function(xi,b0,b1) {
+h <- function(xi, b0, b1) {
  b0 + b1 * xi 
 }
  
 # define the cost function   
 cost <- t(mat.or.vec(1,m))
   for(i in 1:m) {
-    cost[i,1] <-  (1 /(2*m)) * (h(x[i,2],beta[1,1],beta[1,2])- y[i,])^2 
+    cost[i,1] <-  (1 /(2*m)) * (h(x[i,2], beta[1,1], beta[1,2]) - y[i,])^2 
   }
  
 totalCost <- colSums(cost)
@@ -142,10 +156,10 @@ print(totalCost)
 cost1000 <- totalCost
  
 # change iterations to 1001 and compute cost1001
-beta <- (grad.descent(x,1001))
-cost <- t(mat.or.vec(1,m))
+beta <- (grad.descent(x, 1001))
+cost <- t(mat.or.vec(1, m))
   for(i in 1:m) {
-    cost[i,1] <-  (1 /(2*m)) * (h(x[i,2],beta[1,1],beta[1,2])- y[i,])^2 
+    cost[i,1] <-  (1 /(2*m)) * (h(x[i,2], beta[1,1], beta[1,2]) - y[i,])^2 
   }
 cost1001 <- colSums(cost)
  
