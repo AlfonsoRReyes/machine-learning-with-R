@@ -108,10 +108,11 @@ solve(t(x.scaled) %*% x.scaled) %*% t(x.scaled) %*% y  # w/ feature scaling
 summary(lm(y ~ x[, 2]))         # w/o feature scaling
 summary(lm(y ~ x.scaled[, 2]))  # w/feature scaling
  
-# define the gradient function dJ/dtheata: 1/m * (h(x)-y))*x where h(x) = x*theta
+# define the gradient function dJ/dtheta: 1/m * (h(x)-y))*x 
+# where h(x) = x*theta
 # in matrix form this is as follows:
 grad <- function(x, y, theta) {
-  gradient <- (1/m)* (t(x) %*% ((x %*% t(theta)) - y))
+  gradient <- (1/m) * (t(x) %*% ((x %*% t(theta)) - y))
   return(t(gradient))
 }
  
