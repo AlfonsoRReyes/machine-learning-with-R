@@ -2,9 +2,15 @@
 title: "Gradient Descent in R. Minimization of functions"
 author: "Matt Bogard"
 output:
-  html_document: default
+  pdf_document: 
+    latex_engine: xelatex
   html_notebook: default
+  html_document: default
 ---
+
+```{r setup, include=FALSE, error=TRUE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA, error = TRUE)
+```
 
 Source: http://econometricsense.blogspot.com/2011/11/gradient-descent-in-r.html
 
