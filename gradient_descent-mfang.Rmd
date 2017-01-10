@@ -7,6 +7,11 @@ output:
   html_notebook: default
 ---
 
+Source: https://rstudio-pubs-static.s3.amazonaws.com/159940_4a7d620cb4e0460486c364281cdf5780.html
+
+```{r setup, include=FALSE, error=TRUE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA, error = TRUE)
+```
 
 Dr. Ng showed how to use gradient descent to find the linear regression fit in matlab. Here is a demonstration of how to implement it in R. The syntax of matlab and R differs a lot in vector/matrix indexing, but the idea is the same.
 
