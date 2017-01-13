@@ -1,9 +1,0 @@
----
-title: " Using RcppArmadillo"
-output: html_notebook
----
-
-```{r}
-library(Rcpp)               ## recent version for sourceCpp()
-sourceCpp("src/eigenEx.cpp")    ## converts source file into getEigen() we can call
-```
