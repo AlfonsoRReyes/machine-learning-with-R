@@ -2,18 +2,38 @@
 title: 'R and Python: Gradient Descent'
 author: "Al Asaad"
 output:
-  pdf_document: default
+  html_document: default
   html_notebook: default
+  pdf_document: default
 ---
 
 
+
 ```{r setup, include=FALSE, error=TRUE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE, comment = NA, error = TRUE)
+# Set knitr options for knitting code into the report:
+# - Don't print out code (echo)
+# - Save results so that code blocks aren't re-run unless code changes (cache),
+# _or_ a relevant earlier code block changed (autodep), but don't re-run if the
+# only thing that changed was the comments (cache.comments)
+# - Don't clutter R output with messages or warnings (message, warning)
+  # This _will_ leave error messages showing up in the knitted report
+
+knitr::opts_chunk$set(echo = TRUE, 
+                      cache = TRUE,
+                      autodep = TRUE,
+                      cache.comments = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      error = TRUE)
 ```
 
-One of the problems often dealt in Statistics is minimization of the objective function. And contrary to the linear models, there is no analytical solution for models that are nonlinear on the parameters such as logistic regression, neural networks, and nonlinear regression models (like Michaelis-Menten model). In this situation, we have to use mathematical programming or optimization. And one popular optimization algorithm is the gradient descent, which we're going to illustrate here. 
+One of the problems often dealt in Statistics is minimization of the objective function. And contrary to the linear models, there is no analytical solution for models that are nonlinear on the parameters such as logistic regression, neural networks, and nonlinear regression models (like Michaelis-Menten model). In this situation, we have to use mathematical programming or optimization. And one popular optimization algorithm is the `gradient descent`, which we're going to illustrate here. 
 
 To start with, let's consider a simple function with closed-form solution given by
+
+$$
+f(\beta) = \beta^4 - 3 \beta^3 +2
+$$
 
 
 The following plot shows the minimum of the function at $\beta=9/4$ (red line in the plot below).
@@ -21,9 +41,9 @@ The following plot shows the minimum of the function at $\beta=9/4$ (red line in
 ```{r}
 library(ggplot2)
 
-f <- function (beta) beta**4 - 3 * beta**3 + 2
+f <- function (beta) beta**4 - 3 * beta**3 + 2     # build the function
 
-beta <- seq(-2, 4, length.out = 100)
+beta <- seq(-2, 4, length.out = 100)               # points for plotting
 
 qplot(beta, 
       f(beta), 
@@ -33,6 +53,8 @@ qplot(beta,
   
   geom_vline(xintercept = 9/4, col = 'red')
 ```
+
+## Minimization using Gradient Descent
 Now let's consider minimizing this problem using gradient descent with the following algorithm:
 
 1. Initialize $x_r, r=0$
@@ -55,11 +77,11 @@ beta_old <- 0; beta_new <- 4; gamma <- 0.001; precision <- 0.00001
 # Derivative of the function f
 f_prime <- function (beta) 4 * beta**3 - 9 * beta**2
 
-# Plot
+# create dataframebet
 dframe <- data.frame(beta = rep(beta, 2), 
                      curves = c(f(beta), f_prime(beta)), 
                      type = rep(c("f", "f'"), each = 100))
-
+# plot
 p <- ggplot(data = dframe, aes(x = beta, y = curves, colour = type)) + 
   geom_line() + 
   geom_segment(aes(x = beta_new, 
@@ -105,6 +127,8 @@ while (abs(beta_new - beta_old) > precision) {
 # Print results
 p; i; beta_new
 ```
+
+## Changing the `learning rate`
 Obviously the convergence is slow, and we can adjust this by tuning the learning-rate parameter, for example if we try to increase it into $\gamma = .01$ (change gamma to .01 in the codes above) the algorithm will converge at 42nd iteration. To support that claim, see the steps of its gradient in the plot below.
 
 ```{r}
@@ -165,6 +189,7 @@ while (abs(beta_new - beta_old) > precision) {
 p; i; beta_new
 ```
 
+## Changing the initial guess
 If we try to change the starting value from 4 to .1 (change beta_new to .1) with $\gamma = .01$, the algorithm converges at 173rd iteration with estimate $\beta_{173} = 2.249962 \approx  9/4$ (see the plot below).
 
 ```{r}
@@ -228,10 +253,12 @@ while (abs(beta_new - beta_old) > precision) {
 p; i; beta_new
 ```
 
-Now let's switch to another function known as Rosenbrock defined as
+## Experimenting with another function
+Now let's switch to another function known as `Rosenbrock` defined as
 $f(w) = (1−w1)^2 + 100(w2−w21)^2$
 
 ```{r}
+# plot contour
 library(plot3D)
 
 x <- seq(-2, 2, length.out = 15)
@@ -290,6 +317,7 @@ Notice that I did not use ggplot for the contour plot, this is because the plot 
 Finally, we can also visualize the gradient points on the surface as shown in the following figure.
 
 ```{r}
+# plot surface
 library(plot3D)
 
 persp3D(x, y, z, 
