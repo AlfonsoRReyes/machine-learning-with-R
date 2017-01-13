@@ -5,3 +5,5 @@
 *.html
 *.pdf
 !docs/*.pdf
+gradient_descent-aassad_cache
+gradient_descent-aassad_files
