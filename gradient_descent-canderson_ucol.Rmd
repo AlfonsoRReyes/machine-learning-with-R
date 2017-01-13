@@ -1,10 +1,10 @@
 ---
 title: 'CS545: Gradient Descent'
 author: "Chuck Anderson"
-date: "2009"
+date: '2009'
 output:
-  html_notebook: default
   html_document: default
+  html_notebook: default
 ---
 
 ```{r setup, include=FALSE, error=TRUE, message=FALSE}
