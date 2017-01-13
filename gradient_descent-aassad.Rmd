@@ -24,7 +24,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       cache.comments = FALSE,
                       message = FALSE,
                       warning = FALSE,
-                      error = TRUE)
+                      error = TRUE,
+                      comment = NA)
 ```
 
 One of the problems often dealt in Statistics is minimization of the objective function. And contrary to the linear models, there is no analytical solution for models that are nonlinear on the parameters such as logistic regression, neural networks, and nonlinear regression models (like Michaelis-Menten model). In this situation, we have to use mathematical programming or optimization. And one popular optimization algorithm is the `gradient descent`, which we're going to illustrate here. 
