@@ -1,9 +1,9 @@
 ---
 title: "software-inspection"
 output:
-  html_notebook: default
   html_document:
     keep_md: yes
+  html_notebook: default
 ---
 
 
@@ -114,7 +114,7 @@ $Q$ is the (eigenvectors) square (N×N) matrix whose $i^{th}$ column is the eige
 Sphering the data using Matlab like functions:
 
 ```{r, fig.asp=1}
-source("../matlab.R")
+source("../R/matlab.R")
 
 # read the matrix from Matlab table
 x_table <- read.csv('table.csv', header = FALSE)
