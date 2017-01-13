@@ -36,7 +36,7 @@ The variables are normalized by the size of the inspection (the number of pages 
 
 ```r
 prepsloc <- software.mat$prepsloc
-defsloc <- software.mat$defsloc
+defsloc  <- software.mat$defsloc
 ```
 
 
@@ -154,7 +154,18 @@ Sphering the data using Matlab like functions:
 
 ```r
 source("../matlab.R")
+```
 
+```
+Warning in file(filename, "r", encoding = encoding): cannot open file '../
+matlab.R': No such file or directory
+```
+
+```
+Error in file(filename, "r", encoding = encoding): cannot open the connection
+```
+
+```r
 # read the matrix from Matlab table
 x_table <- read.csv('table.csv', header = FALSE)
 
@@ -164,20 +175,55 @@ xbar <- colMeans(X)   # calculate the means of the columns
 
 # get the eigenvectors and eigenvalues of the covariance matrix
 eig <- mlab_eig(cov(X))  # calculate the eigenVv of the covariance of X
-D <- eig$D
-V <- eig$V
+```
 
+```
+Error in eval(expr, envir, enclos): could not find function "mlab_eig"
+```
+
+```r
+D <- eig$D
+```
+
+```
+Error in eval(expr, envir, enclos): object 'eig' not found
+```
+
+```r
+V <- eig$V
+```
+
+```
+Error in eval(expr, envir, enclos): object 'eig' not found
+```
+
+```r
 # center the data
 Xc <- X - matrix(1, n, 1) %*% xbar
 
 # Sphere the data
 z <- D %^% (-1/2) %*% t(V) %*% t(Xc)  # using a custom built ^ operator
-Z <- t(z)                             # transpose to plot
+```
 
+```
+Error in eval(expr, envir, enclos): could not find function "%^%"
+```
+
+```r
+Z <- t(z)                             # transpose to plot
+```
+
+```
+Error in t(z): object 'z' not found
+```
+
+```r
 plot(Z[, 1], Z[, 2])
 ```
 
-![](02-software-inspection_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+```
+Error in plot(Z[, 1], Z[, 2]): object 'Z' not found
+```
 
 
 
@@ -220,7 +266,18 @@ What about creating a function to imitate what Matlab does with `eig()`
 
 ```r
 source("../matlab.R")
+```
 
+```
+Warning in file(filename, "r", encoding = encoding): cannot open file '../
+matlab.R': No such file or directory
+```
+
+```
+Error in file(filename, "r", encoding = encoding): cannot open the connection
+```
+
+```r
 # read the matrix from Matlab table
 x_table <- read.csv('table.csv', header = FALSE)
 
@@ -228,19 +285,18 @@ x_table <- read.csv('table.csv', header = FALSE)
 X <- as.matrix(x_table)
 
 eig_ret <- mlab_eig(cov(X))
+```
+
+```
+Error in eval(expr, envir, enclos): could not find function "mlab_eig"
+```
+
+```r
 eig_ret
 ```
 
 ```
-$V
-           [,1]      [,2]
-[1,] -0.7327235 0.6805265
-[2,]  0.6805265 0.7327235
-
-$D
-          [,1]    [,2]
-[1,] 0.5899912 0.00000
-[2,] 0.0000000 1.28509
+Error in eval(expr, envir, enclos): object 'eig_ret' not found
 ```
 
 
@@ -343,5 +399,11 @@ emat$vectors %*%
          [,1]      [,2]
 [1,] 1.301899 0.0000000
 [2,] 0.000000 0.8821313
+```
+
+Saving X variable for other use.
+
+```r
+save(X, file = "X.mvnrnd.RData")
 ```
 
