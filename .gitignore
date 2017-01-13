@@ -1,5 +1,4 @@
 .Rproj.user
-.Rhistory
 .RData
 .Ruserdata
 *.html
@@ -7,3 +6,4 @@
 !docs/*.pdf
 *_cache
 *_files
+.Rhistory
