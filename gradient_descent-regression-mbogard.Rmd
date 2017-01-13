@@ -2,8 +2,8 @@
 title: "Regression via Gradient Descent in R"
 author: "Matt Bogard"
 output:
-  html_document: default
   html_notebook: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE, error=TRUE, message=FALSE}
@@ -22,7 +22,7 @@ From my earliest gradient descent post, I provided the intuition and notation ne
 In machine learning, the regression function $y = b_0 + b_1x$ is referred to as a `hypothesis` function:
 
 $$
-h_{\theta}(x) = \theta_0 + \theta_1x$
+h_{\theta}(x) = \theta_0 + \theta_1x
 $$
 The idea, just like in OLS is to minimize the sum of squared errors, represented as a ‘cost function’ in the machine learning context:
 
@@ -64,6 +64,15 @@ $$
 \} \\
 \end{aligned}
 $$
+Equation that cen be rewritten as:
+$$
+\begin{aligned}
+   \theta_j := \theta_j - \alpha \delta \\
+\end{aligned}
+$$
+where:
+$\alpha$ is the learning rate and $\theta$ and $\delta$ are vectors.
+
 
 The following R code implements this algorithm and achieves the same results we got from the matrix programming or the canned R or SAS routines before. The concept of `feature scaling` is introduced, which is a method of standardizing the independent variables or features. This improves the convergence speed of the algorithm. Additional code intuitively investigates the concept of convergence. Ideally, the algorithm should stop once changes in the cost function become small as we update the values in $\theta$.
 
