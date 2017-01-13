@@ -1,0 +1,119 @@
+---
+title: "Orthogonal matrices"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+
+```{r setup, include=FALSE, error=TRUE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA, error = TRUE)
+```
+
+
+
+## Generating orthogonal matrices
+
+Source: https://stat.ethz.ch/pipermail/r-help/2003-February/030388.html
+
+\     
+We create a 3x3 matrix:
+```{r}
+k <- 3
+tstMat <- array(runif(k), dim=c(k,k))
+tstMat
+```
+
+\   
+Then, apply QR decomposition function `qr` to obtain the orthogonal matrix:
+```{r}
+tstOrth <- qr.Q(qr(tstMat))
+tstOrth
+```
+
+
+Then, we proceed to prove that the resulting matrix is orthogonal by testing it with $O^T * O =I$:
+
+
+```{r}
+t(tstOrth) %*% tstOrth
+```
+
+Which is the identity matrix $I$.
+
+## Example:
+Here is another example from Wikipedia:
+
+```{r}
+a1 <- c(12, -51, 4)
+a2 <- c(6, 167, -68)
+a3 <- c(-4, 24, -41)
+
+A <- matrix(c(a1, a2, a3), ncol = 3, byrow = T)
+A
+```
+
+```{r}
+q1 <- c(6/7, -69/175, -58/175)
+q2 <- c(3/7, 158/175, 6/175)
+q3 <- c(-2/7, 6/35, -33/35)
+
+Q <- matrix(c(q1, q2, q3), ncol =3, byrow = T)
+Q
+```
+
+```{r}
+crossprod(A, Q)
+```
+
+```{r}
+q1
+q2
+q3
+```
+
+
+```{r}
+t(Q) %*% Q
+```
+
+Which is the identity matrix $I$.
+
+## Generating a random orthogonal matrix with `pracma`
+Source: https://artax.karlin.mff.cuni.cz/r-help/library/pracma/html/rortho.html
+
+
+```{r include=F}
+# install pracma package if required
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(pracma)
+```
+
+
+
+```{r}
+# load library
+library(pracma)
+
+# Generate random orthogonal matrix
+Q <- randortho(5)
+
+```
+\  
+
+Test $Q Q^T$:
+
+```{r}
+zapsmall(Q %*% t(Q))    # rounding with zapsmall
+```
+
+\  
+
+Test $Q^T Q$:
+```{r}
+zapsmall(t(Q) %*% Q)
+```
+
+
+
+   
