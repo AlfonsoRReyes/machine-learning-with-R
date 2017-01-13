@@ -64,7 +64,7 @@ X <- cbind(1, matrix(x))
 
 ```
 
-$error = \theta x -y$
+$sqrError = \theta x -y$
 
 ```{r}
 # gradient descent
