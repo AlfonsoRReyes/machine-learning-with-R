@@ -1,3 +1,26 @@
+---
+title: "Calling a C++ function"
+output: html_notebook
+---
+
+
+```{r message=FALSE}
+library(Rcpp)
+
+sourceCpp("../../src/MatrixExample.cpp")
+
+M <- matrix((1:16)^2, 4)
+class(M)
+ME <- MatrixExample(M)
+class(ME)
+ME
+```
+
+
+
+Code
+
+```
 #include <Rcpp.h>
 #include <cmath>
 
@@ -19,3 +42,4 @@ List MatrixExample(const NumericMatrix & orig) {
   return List::create(Named("result") = mat, 
                       Named("original") = orig);
 }
+```
