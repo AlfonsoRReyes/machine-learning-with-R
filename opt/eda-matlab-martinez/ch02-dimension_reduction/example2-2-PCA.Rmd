@@ -51,7 +51,7 @@ n;p
 > We will create athe function `m.repmat()`.
 
 ```{r}
-source("../matlab.R")
+source("../R/matlab.R")
 r <- m.repmat(colSums(data)/n, n, 1)
 m.size(r)
 ```
@@ -80,7 +80,7 @@ dim(mcs)
 ```
 
 ```{r}
-source("../matlab.R")
+source("../R/matlab.R")
 
 # create a new matrix 384x17
 r <- m.repmat(mcs, n, 1)
@@ -93,7 +93,7 @@ dim(r)
 > The `colSums(data)` vector has to be converted first to a 1x17 matrix, otherwise the `m.repmat` custom function will give an incorrect matrix size.
 
 ```{r}
-source("../matlab.R")
+source("../R/matlab.R")
 
 # column sums
 cs <- colSums(data) / n        # numeric vector, no matrix
@@ -108,7 +108,7 @@ dim(datac)
 We are going to use the covariance matrix in PCA since the variables have common units. The reader is asked to explore the correlation matrix approach in the exercises. The eig function is used to calculate the eigenvalues and eigenvectors. MATLAB returns the eigenvalues in a diagonal matrix, and they are in ascending order, so they must be flipped to get the scree plot.
 
 ```{r}
-source("../matlab.R")
+source("../R/matlab.R")
 
 # find the covariance matrix_type
 covm <- cov(datac)
@@ -230,16 +230,9 @@ scatter3D(Xp[,1], Xp[,2], Xp[,3],
           )
 ```
 
-We illustrated the use of the `eig` function that comes in the main MATLAB
-package. It contains another useful function called `eigs` that can be used to
-find the PCs and eigenvalues of sparse matrices. 
+We illustrated the use of the `eig` function that comes in the main MATLAB package. It contains another useful function called `eigs` that can be used to find the PCs and eigenvalues of sparse matrices. 
 
 For those who have the Statistics Toolbox, there is a function called `princomp`. It returns the PCs, the PC scores and other useful information for making inferences regarding the
-eigenvalues. It centers the observations at the means, but does not rescale
-(Statistics Toolbox, Version 5). For PCA using the covariance matrix, the
-`pcacov` function is provided.
+eigenvalues. It centers the observations at the means, but does not rescale (Statistics Toolbox, Version 5). For PCA using the covariance matrix, the `pcacov` function is provided.
 
-Before moving on to the next topic, we recall that the PCA described in this
-book is based on the sample covariance or sample correlation matrix. The
-procedure is similar if the population version of these matrices is used. Many
-interesting and useful properties are known about principal components and the associated data transformations, but are beyond the scope and purpose of this book. We provide references in the last section.￿ᗑ
+Before moving on to the next topic, we recall that the PCA described in this book is based on the sample covariance or sample correlation matrix. The procedure is similar if the population version of these matrices is used. Many interesting and useful properties are known about principal components and the associated data transformations, but are beyond the scope and purpose of this book. We provide references in the last section.

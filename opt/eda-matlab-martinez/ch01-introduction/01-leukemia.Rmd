@@ -40,6 +40,7 @@ library(R.matlab)
 leukemia.mat <- readMat("../data/leukemia.mat", fixNames = TRUE)
 class(leukemia.mat)
 ```
+
 ```{r}
 names(leukemia.mat)
 ```
@@ -77,6 +78,8 @@ image(y,
       ylab = "Gene"
       )
 ```
+
 Each row corresponds to a gene, and each column corresponds to a cancer sample.
+
 the ALL leukemia is highly expressed in the first set of 25 genes, and the AML leukemia is highly expressed in the second set of 25 genes.
 

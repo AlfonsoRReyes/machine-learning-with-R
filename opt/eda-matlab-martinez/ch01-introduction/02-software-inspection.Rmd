@@ -1,7 +1,15 @@
-# software-inspection
+---
+title: "software-inspection"
+output:
+  html_document:
+    keep_md: yes
+  html_notebook: default
+---
 
 
-
+```{r setup, include=FALSE, error=TRUE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA, error = TRUE)
+```
 
 ------
 # Objective
@@ -10,8 +18,7 @@ Transform the origina data set to a diferent set of coordinates system to detect
 
 
 Loading the Matlab software array:
-
-```r
+```{r message=FALSE}
 library(R.matlab)
 
 # read the Matlab array
@@ -20,32 +27,23 @@ software.mat <- readMat("../data/software.mat", fixNames = TRUE)
 
 
 Names of the Matlab objects:
-
-```r
+```{r}
 names(software.mat)
-```
-
-```
-[1] "prepsloc" "defsloc"  "mtgsloc"  "prepage"  "defpage" 
 ```
 
 The file software.mat contains the preparation time in minutes (prepage, prepsloc), the total work hours in minutes for the meeting (mtgsloc), and the number of defects found (defpage, defsloc). 
 
 The variables are normalized by the size of the inspection (the number of pages or SLOC – single lines of code).
  
-
-```r
+```{r}
 prepsloc <- software.mat$prepsloc
 defsloc  <- software.mat$defsloc
 ```
 
 
-
-```r
+```{r, fig.asp=1}
 plot(prepsloc, defsloc)
 ```
-
-![](02-software-inspection_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 ## Transformation
 
@@ -54,8 +52,7 @@ We will plot first a log/log plot of the data.
 
 ### log/log plot
 
-
-```r
+```{r, fig.asp=1}
 # first data transformation
 X = log(prepsloc)
 Y = log(defsloc)
@@ -65,9 +62,8 @@ plot(X, Y,
      xlab = "Log PrepTime/SLOC",
      ylab = "Log Defects/SLOC"
 )
-```
 
-![](02-software-inspection_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+```
 
 We now have a better idea of the relationship between these two variables.
 
@@ -87,56 +83,22 @@ covariance matrix given by the identity matrix.
 
 ### Multivariate normal
 
-
-```r
+```{r}
 n <- 100
 mu <- c(-2, 2)
 sigma <- matrix(c(1, 0.5, 0.5, 1), nrow = 2)
 n
-```
-
-```
-[1] 100
-```
-
-```r
 mu
-```
-
-```
-[1] -2  2
-```
-
-```r
 sigma
 ```
 
-```
-     [,1] [,2]
-[1,]  1.0  0.5
-[2,]  0.5  1.0
-```
-
 Generating a 2-D multivariate normal:
-
-```r
+```{r, fig.asp=1}
 library(MASS)
 
 set.seed(123)
 head(X)
-```
 
-```
-           [,1]
-[1,] -0.7236064
-[2,] -0.6161861
-[3,] -0.6161861
-[4,] -1.1664349
-[5,] -0.8266786
-[6,] -0.8266786
-```
-
-```r
 X <- mvrnorm(n, mu, sigma)
 #plot(X[, 1], X[, 2])
 ```
@@ -151,21 +113,9 @@ $Q$ is the (eigenvectors) square (N×N) matrix whose $i^{th}$ column is the eige
 
 Sphering the data using Matlab like functions:
 
+```{r, fig.asp=1}
+source("../R/matlab.R")
 
-```r
-source("../matlab.R")
-```
-
-```
-Warning in file(filename, "r", encoding = encoding): cannot open file '../
-matlab.R': No such file or directory
-```
-
-```
-Error in file(filename, "r", encoding = encoding): cannot open the connection
-```
-
-```r
 # read the matrix from Matlab table
 x_table <- read.csv('table.csv', header = FALSE)
 
@@ -175,62 +125,26 @@ xbar <- colMeans(X)   # calculate the means of the columns
 
 # get the eigenvectors and eigenvalues of the covariance matrix
 eig <- mlab_eig(cov(X))  # calculate the eigenVv of the covariance of X
-```
-
-```
-Error in eval(expr, envir, enclos): could not find function "mlab_eig"
-```
-
-```r
 D <- eig$D
-```
-
-```
-Error in eval(expr, envir, enclos): object 'eig' not found
-```
-
-```r
 V <- eig$V
-```
 
-```
-Error in eval(expr, envir, enclos): object 'eig' not found
-```
-
-```r
 # center the data
 Xc <- X - matrix(1, n, 1) %*% xbar
 
 # Sphere the data
 z <- D %^% (-1/2) %*% t(V) %*% t(Xc)  # using a custom built ^ operator
-```
-
-```
-Error in eval(expr, envir, enclos): could not find function "%^%"
-```
-
-```r
 Z <- t(z)                             # transpose to plot
-```
 
-```
-Error in t(z): object 'z' not found
-```
-
-```r
 plot(Z[, 1], Z[, 2])
-```
 
-```
-Error in plot(Z[, 1], Z[, 2]): object 'Z' not found
 ```
 
 
 
 Original code
 
+```{r, fig.asp=1}
 
-```r
 # read the matrix from Matlab table
 x_table <- read.csv('table.csv', header = FALSE)
 
@@ -257,27 +171,14 @@ z <- DD %*% t(VV) %*% t(Xc)
 Z <-t(z)                    # transpose to plot
 
 plot(Z[, 1], Z[, 2])
-```
 
-![](02-software-inspection_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+```
 
 What about creating a function to imitate what Matlab does with `eig()`
 
+```{r}
+source("../R/matlab.R")
 
-```r
-source("../matlab.R")
-```
-
-```
-Warning in file(filename, "r", encoding = encoding): cannot open file '../
-matlab.R': No such file or directory
-```
-
-```
-Error in file(filename, "r", encoding = encoding): cannot open the connection
-```
-
-```r
 # read the matrix from Matlab table
 x_table <- read.csv('table.csv', header = FALSE)
 
@@ -285,18 +186,7 @@ x_table <- read.csv('table.csv', header = FALSE)
 X <- as.matrix(x_table)
 
 eig_ret <- mlab_eig(cov(X))
-```
-
-```
-Error in eval(expr, envir, enclos): could not find function "mlab_eig"
-```
-
-```r
 eig_ret
-```
-
-```
-Error in eval(expr, envir, enclos): object 'eig_ret' not found
 ```
 
 
@@ -311,47 +201,21 @@ Error in eval(expr, envir, enclos): object 'eig_ret' not found
 
 array multiplication has direction:
 
+```{r}
 
-```r
 X <- matrix(rnorm(5*2), ncol=2)   # create matrix of 5x2
 dim(X)
-```
-
-```
-[1] 5 2
-```
-
-```r
 xbar <- colMeans(X)
 xbar
-```
 
-```
-[1]  0.67498648 -0.05251753
-```
-
-```r
 ones <- array(1, c(5,1))
 
 ones %*% xbar
-```
-
-```
-          [,1]        [,2]
-[1,] 0.6749865 -0.05251753
-[2,] 0.6749865 -0.05251753
-[3,] 0.6749865 -0.05251753
-[4,] 0.6749865 -0.05251753
-[5,] 0.6749865 -0.05251753
-```
-
-```r
 # xbar %*% ones   # will throw an error
 ```
 
 Raising a matrix to a negative power:
-
-```r
+```{r}
 "%^%" <- function(x, n)
         with(eigen(x), 
              vectors %*% 
@@ -365,45 +229,25 @@ m <- matrix(c(1, 0.4, 0.4, 1), nrow = 2)
 m %^% (-0.5)
 ```
 
-```
-           [,1]       [,2]
-[1,]  1.0680744 -0.2229201
-[2,] -0.2229201  1.0680744
-```
-
 Another example using the eigen vector of the problem
-
-```r
+```{r}
 d <- matrix(c(0.5899912, 0, 0, 1.28509), nrow = 2) 
 d %^% (-0.5)
 ```
 
-```
-         [,1]      [,2]
-[1,] 1.301899 0.0000000
-[2,] 0.000000 0.8821313
-```
-
 Raising a matrix to a negative power:
-
-```r
+```{r}
 R <- matrix(c(0.5899912, 0, 0, 1.28509), nrow = 2) 
 emat <- eigen( R )
 
 emat$vectors %*% 
   diag(emat$values^(-1/2)) %*%
   t(emat$vectors)
-```
 
-```
-         [,1]      [,2]
-[1,] 1.301899 0.0000000
-[2,] 0.000000 0.8821313
 ```
 
 Saving X variable for other use.
-
-```r
+```{r}
 save(X, file = "X.mvnrnd.RData")
 ```
 

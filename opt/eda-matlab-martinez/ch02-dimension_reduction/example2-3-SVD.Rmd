@@ -11,19 +11,10 @@ knitr::opts_chunk$set(echo = TRUE, comment = NA, error = TRUE)
 ```
 
 ## 2.3 Singular Value Decomposition - SV D
-Singular value decomposition (SVD) is an important method from matrix
-algebra and is related to PCA. In fact, it provides a way to find the PCs
-without explicitly calculating the covariance matrix [Gentle, 2002]. It also
-enjoys widespread use in the analysis of gene expression data [Alter, Brown
-and Botstein, 2000; Wall, Dyck and Brettin, 2001; Wall, Rechtsteiner and
-Rocha, 2003] and in information retrieval applications [Deerwester, et al.,
-1990; Berry, Dumais and O’Brien, 1995; Berry, Drmac and Jessup, 1999], so it
-is an important technique its own right. 
+Singular value decomposition (SVD) is an important method from matrix algebra and is related to PCA. In fact, it provides a way to find the PCs without explicitly calculating the covariance matrix [Gentle, 2002]. It also enjoys widespread use in the analysis of gene expression data [Alter, Brown and Botstein, 2000; Wall, Dyck and Brettin, 2001; Wall, Rechtsteiner and
+Rocha, 2003] and in information retrieval applications [Deerwester, et al., 1990; Berry, Dumais and O’Brien, 1995; Berry, Drmac and Jessup, 1999], so it is an important technique its own right. 
 
-As before, we start with our data matrix $\mathbf X$, where in some cases, we will
-center the data about their mean to get $\mathbf X_c$. We use the noncentered form in
-the explanation that follows, but the technique is valid for an arbitrary
-matrix; i.e., the matrix does not have to be square. The SVD of X is given by:
+As before, we start with our data matrix $\mathbf X$, where in some cases, we will center the data about their mean to get $\mathbf X_c$. We use the noncentered form in the explanation that follows, but the technique is valid for an arbitrary matrix; i.e., the matrix does not have to be square. The SVD of X is given by:
 
 $$
 \begin{aligned}
@@ -33,13 +24,8 @@ $$
 
 where $\mathbf U$ is an $n \times n$ matrix, $\mathbf D$ is a diagonal matrix with n rows and p columns, and $\mathbf V$ has dimensions pxp. The columns of $\mathbf U$ and $\mathbf V$ are orthonormal. $\mathbf D$ is a matrix containing the singular values along its diagonal, which are the square roots of the eigenvalues of $\mathbf X \mathbf X^T$ and zeros everywhere else.
 
-To illustrate the SVD approach, we look at an example from information
-retrieval called ___latent semantic indexing___ or LSI [Deerwester, et al., 1990].
-Many applications of information retrieval (IR) rely on lexical matching,
-where words are matched between a user ’s query and those words assigned
-to documents in a corpus or database. However, the words people use to
-describe documents can be diverse and imprecise, so the results of the queries
-are often less than perfect. LSI uses SVD to derive vectors that are more
+To illustrate the SVD approach, we look at an example from information retrieval called ___latent semantic indexing___ or LSI [Deerwester, et al., 1990].
+Many applications of information retrieval (IR) rely on lexical matching, where words are matched between a user ’s query and those words assigned to documents in a corpus or database. However, the words people use to describe documents can be diverse and imprecise, so the results of the queries are often less than perfect. LSI uses SVD to derive vectors that are more
 robust at representing the meaning of words and documents.
 
 ## Example
@@ -67,7 +53,7 @@ terms.1 The following MATLAB code starts the process:
 
 ```{r message=FALSE}
 library(R.matlab)
-source("../matlab.R")
+source("../R/matlab.R")
 
 # read the Matlab array
 lsiex.mat <- readMat("../data/lsiex.mat", fixNames = TRUE)
@@ -103,9 +89,7 @@ termdoc
 ```
 
 
-Say we want to find books about baking bread, then the vector that represents
-this query is given by a column vector with a 1 in the first and fourth
-positions:
+Say we want to find books about baking bread, then the vector that represents this query is given by a column vector with a 1 in the first and fourth positions:
 
 > A matrix in Matlab `[1 0 1 0 0 0 ]` has to have the form of 1xn.
 
@@ -139,15 +123,8 @@ cosq1a
 cosq2a
 ```
 
-If we use a cutoff value of 0.5, then the relevant books for our first query are
-the first and the fourth ones, which are those that describe baking bread. On
-the other hand, the second query matches with the first book, but misses the
-fourth one, which would be relevant. Researchers in the area of IR have
-applied several techniques to alleviate this problem, one of which is LSI. One
-of the powerful uses of LSI is in matching a user ’s query with existing
-documents in the corpus whose representations have been reduced to lower
-rank approximations via the SVD. The idea being that some of the dimensions represented by the full term-document matrix are noise and that documents will have closer semantic structure after dimensionality reduction using SVD. So, we now find the singular value decomposition
-using the function __svd__.
+If we use a cutoff value of 0.5, then the relevant books for our first query are the first and the fourth ones, which are those that describe baking bread. On the other hand, the second query matches with the first book, but misses the
+fourth one, which would be relevant. Researchers in the area of IR have applied several techniques to alleviate this problem, one of which is LSI. One of the powerful uses of LSI is in matching a user ’s query with existing documents in the corpus whose representations have been reduced to lower rank approximations via the SVD. The idea being that some of the dimensions represented by the full term-document matrix are noise and that documents will have closer semantic structure after dimensionality reduction using SVD. So, we now find the singular value decomposition using the function __svd__.
 
 > Let's use svd() from R:
 
@@ -159,7 +136,7 @@ svd(termdoc)
 
 
 ```{r}
-source("../matlab.R")
+source("../R/matlab.R")
 
 svd_all <- m.svd(termdoc)
 
@@ -196,23 +173,12 @@ cosq2b
 ```
 
 
-Using a cutoff value of 0.5, we now correctly have documents 1 and 4 as being
-relevant to our queries on _baking bread_ and _baking_.
+Using a cutoff value of 0.5, we now correctly have documents 1 and 4 as being relevant to our queries on _baking bread_ and _baking_.
 
-Note that in the above loop, we are using the magnitudes of the original
-query vectors as in Berry, Drmac and Jessup [Equation 6.1, 1999]. This saves
-on computations and also impro ves precision (disregarding irrelevant
-information). We could divide by the magnitudes of the reduced query
-vectors (`q1t` and `q2t`) in the loop to improve recall (retrieving relevant
-information) at the expense of precision.
+Note that in the above loop, we are using the magnitudes of the original query vectors as in Berry, Drmac and Jessup [Equation 6.1, 1999]. This saves on computations and also impro ves precision (disregarding irrelevant information). We could divide by the magnitudes of the reduced query vectors (`q1t` and `q2t`) in the loop to improve recall (retrieving relevant information) at the expense of precision.
 
-Before going on to the next topic, we point out that the literature describing
-SVD applied t o LSI and gene express ion data d efines the matrices o f
-Equation 2.5 in a different way. The decomposition is the same, but the
-difference is in the size of the matrices __U__ and __D__. Some definitions have the
-dimensions of __U__ as $n \times p$ and __D__ with dimensions $p \times p$ [Golub & Van Loan,
-1996]. We follow the definition in Strang [1988, 1993], which is also used in
-MATLAB.
+Before going on to the next topic, we point out that the literature describing SVD applied t o LSI and gene express ion data d efines the matrices of Equation 2.5 in a different way. The decomposition is the same, but the difference is in the size of the matrices __U__ and __D__. Some definitions have the
+dimensions of __U__ as $n \times p$ and __D__ with dimensions $p \times p$ [Golub & Van Loan, 1996]. We follow the definition in Strang [1988, 1993], which is also used in MATLAB.
 
 
 
