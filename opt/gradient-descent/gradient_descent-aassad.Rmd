@@ -1,0 +1,347 @@
+---
+title: 'R and Python: Gradient Descent'
+author: "Al Asaad"
+output:
+  html_document: default
+  html_notebook: default
+  pdf_document: default
+---
+
+
+
+```{r setup, include=FALSE, error=TRUE, message=FALSE}
+# Set knitr options for knitting code into the report:
+# - Don't print out code (echo)
+# - Save results so that code blocks aren't re-run unless code changes (cache),
+# _or_ a relevant earlier code block changed (autodep), but don't re-run if the
+# only thing that changed was the comments (cache.comments)
+# - Don't clutter R output with messages or warnings (message, warning)
+  # This _will_ leave error messages showing up in the knitted report
+
+knitr::opts_chunk$set(echo = TRUE, 
+                      cache = TRUE,
+                      autodep = TRUE,
+                      cache.comments = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      error = TRUE,
+                      comment = NA)
+```
+
+One of the problems often dealt in Statistics is minimization of the objective function. And contrary to the linear models, there is no analytical solution for models that are nonlinear on the parameters such as logistic regression, neural networks, and nonlinear regression models (like Michaelis-Menten model). In this situation, we have to use mathematical programming or optimization. And one popular optimization algorithm is the `gradient descent`, which we're going to illustrate here. 
+
+To start with, let's consider a simple function with closed-form solution given by
+
+$$
+f(\beta) = \beta^4 - 3 \beta^3 +2
+$$
+
+
+The following plot shows the minimum of the function at $\beta=9/4$ (red line in the plot below).
+
+```{r}
+library(ggplot2)
+
+f <- function (beta) beta**4 - 3 * beta**3 + 2     # build the function
+
+beta <- seq(-2, 4, length.out = 100)               # points for plotting
+
+qplot(beta, 
+      f(beta), 
+      xlab = expression(beta), 
+      ylab = expression(f(beta)), 
+      geom = 'line') +  
+  
+  geom_vline(xintercept = 9/4, col = 'red')
+```
+
+## Minimization using Gradient Descent
+Now let's consider minimizing this problem using gradient descent with the following algorithm:
+
+1. Initialize $x_r, r=0$
+2. while $\|x_r - x_{r+1} \| > \nu$
+3.    $\;\;\; x_{r+1} \leftarrow x_r - \gamma \nabla f(x_r)$
+4.    $\;\;\; r \leftarrow r+1$
+5. end while
+6. return $x_r$ and $r$
+
+
+where $\nabla f(x_r)$is the gradient of the cost function, $\gamma$ is the learning-rate parameter of the algorithm, and $\nu$ is the precision parameter. 
+
+For the function above, let the initial guess be $\hat{\beta}=4$ and $\gamma=.001$ with $\nu = .00001$. Then $\nabla f(\hat \beta) = 112$, so that $\beta_1 = \beta 0−.001(112) = 3.888$
+
+
+```{r}
+# Set the initial guess and other parameters
+beta_old <- 0; beta_new <- 4; gamma <- 0.001; precision <- 0.00001
+
+# Derivative of the function f
+f_prime <- function (beta) 4 * beta**3 - 9 * beta**2
+
+# create dataframebet
+dframe <- data.frame(beta = rep(beta, 2), 
+                     curves = c(f(beta), f_prime(beta)), 
+                     type = rep(c("f", "f'"), each = 100))
+# plot
+p <- ggplot(data = dframe, aes(x = beta, y = curves, colour = type)) + 
+  geom_line() + 
+  geom_segment(aes(x = beta_new, 
+                   y = f(beta_new), 
+                   xend = beta_new, 
+                   yend = f_prime(beta_new), 
+                   colour = 'orange'), show.legend = TRUE) +
+  xlab(expression(beta)) + ylab('y') +
+  theme(legend.position = c(.2, .85),
+        legend.background = element_rect(fill = 'gray')) +
+  scale_colour_manual(name = 'Curves and Segments', 
+                      labels = c(
+                        expression(f(beta)), 
+                        expression(paste(frac(df(beta), paste('d', beta)), sep = "")), 
+                        expression(bar(paste(f(beta[r]), paste(f, "'", (beta[r]), sep = ""))))
+                        ), 
+                      values = c('#FF033E', '#318CE7', '#FFBF00'), 
+                      guide = guide_legend(direction = "horizontal", 
+                                           title.position = "top",
+                                           label.position = "right", 
+                                           label.theme = element_text(angle = 0, size = 10))
+                      )
+
+# Perform Gradient Descent
+i <- 0 # Counter for number of iterations
+p <- p + geom_segment(x = beta_new, 
+                      y = f(beta_new), 
+                      xend = beta_new, 
+                      yend = f_prime(beta_new), 
+                      colour = '#FFA812')
+
+while (abs(beta_new - beta_old) > precision) {
+  beta_old <- beta_new
+  beta_new <- beta_old - gamma * f_prime(beta_old)
+  p <- p + geom_segment(x = beta_new, 
+                        y = f(beta_new), 
+                        xend = beta_new, 
+                        yend = f_prime(beta_new), 
+                        colour = '#FFA812')
+  i <- i + 1
+}
+
+# Print results
+p; i; beta_new
+```
+
+## Changing the `learning rate`
+Obviously the convergence is slow, and we can adjust this by tuning the learning-rate parameter, for example if we try to increase it into $\gamma = .01$ (change gamma to .01 in the codes above) the algorithm will converge at 42nd iteration. To support that claim, see the steps of its gradient in the plot below.
+
+```{r}
+# Set the initial guess and other parameters
+beta_old <- 0; beta_new <- 4; gamma <- 0.01; precision <- 0.00001
+
+# Derivative of the function f
+f_prime <- function (beta) 4 * beta**3 - 9 * beta**2
+
+# Plot
+dframe <- data.frame(beta = rep(beta, 2), 
+                     curves = c(f(beta), f_prime(beta)), 
+                     type = rep(c("f", "f'"), each = 100))
+
+p <- ggplot(data = dframe, aes(x = beta, y = curves, colour = type)) + 
+  geom_line() + 
+  geom_segment(aes(x = beta_new, 
+                   y = f(beta_new), 
+                   xend = beta_new, 
+                   yend = f_prime(beta_new), 
+                   colour = 'orange'), show.legend = TRUE) +
+  xlab(expression(beta)) + ylab('y') +
+  theme(legend.position = c(.2, .85),
+        legend.background = element_rect(fill = 'gray')) +
+  scale_colour_manual(name = 'Curves and Segments', 
+                      labels = c(
+                        expression(f(beta)), 
+                        expression(paste(frac(df(beta), paste('d', beta)), sep = "")), 
+                        expression(bar(paste(f(beta[r]), paste(f, "'", (beta[r]), sep = ""))))
+                        ), 
+                      values = c('#FF033E', '#318CE7', '#FFBF00'), 
+                      guide = guide_legend(direction = "horizontal", 
+                                           title.position = "top",
+                                           label.position = "right", 
+                                           label.theme = element_text(angle = 0, size = 10))
+                      )
+
+# Perform Gradient Descent
+i <- 0 # Counter for number of iterations
+p <- p + geom_segment(x = beta_new, 
+                      y = f(beta_new), 
+                      xend = beta_new, 
+                      yend = f_prime(beta_new), 
+                      colour = '#FFA812')
+
+while (abs(beta_new - beta_old) > precision) {
+  beta_old <- beta_new
+  beta_new <- beta_old - gamma * f_prime(beta_old)
+  p <- p + geom_segment(x = beta_new, 
+                        y = f(beta_new), 
+                        xend = beta_new, 
+                        yend = f_prime(beta_new), 
+                        colour = '#FFA812')
+  i <- i + 1
+}
+
+# Print results
+p; i; beta_new
+```
+
+## Changing the initial guess
+If we try to change the starting value from 4 to .1 (change beta_new to .1) with $\gamma = .01$, the algorithm converges at 173rd iteration with estimate $\beta_{173} = 2.249962 \approx  9/4$ (see the plot below).
+
+```{r}
+# Set the initial guess and other parameters
+beta_old <- 0; beta_new <- 0.1; gamma <- 0.01; precision <- 0.00001
+
+# Derivative of the function f
+f_prime <- function (beta) 4 * beta**3 - 9 * beta**2
+
+# Plot
+dframe <- data.frame(beta = rep(beta, 2), 
+                     curves = c(f(beta), f_prime(beta)), 
+                     type = rep(c("f", "f'"), each = 100))
+
+p <- ggplot(data = dframe, aes(x = beta, y = curves, colour = type)) + 
+  geom_line() + 
+  geom_segment(aes(x = beta_new, 
+                   y = f(beta_new), 
+                   xend = beta_new, 
+                   yend = f_prime(beta_new), 
+                   colour = 'orange'), show.legend = TRUE) +
+  xlab(expression(beta)) + ylab('y') +
+  theme(legend.position = c(.2, .85),
+        legend.background = element_rect(fill = 'gray')) +
+  scale_colour_manual(name = 'Curves and Segments', 
+                      labels = c(
+                        expression(f(beta)), 
+                        expression(paste(frac(df(beta), 
+                                              paste('d', beta)), sep = "")), 
+                        expression(bar(paste(f(beta[r]), 
+                                             paste(f, "'", (beta[r]), sep = ""))))
+                        ), 
+                      values = c('#FF033E', '#318CE7', '#FFBF00'), 
+                      guide = guide_legend(direction = "horizontal", 
+                                           title.position = "top",
+                                           label.position = "right", 
+                                           label.theme = element_text(angle = 0, 
+                                                                      size = 10))
+                      )
+
+# Perform Gradient Descent
+i <- 0 # Counter for number of iterations
+p <- p + geom_segment(x = beta_new, 
+                      y = f(beta_new), 
+                      xend = beta_new, 
+                      yend = f_prime(beta_new), 
+                      colour = '#FFA812')
+
+while (abs(beta_new - beta_old) > precision) {
+  beta_old <- beta_new
+  beta_new <- beta_old - gamma * f_prime(beta_old)
+  p <- p + geom_segment(x = beta_new, 
+                        y = f(beta_new), 
+                        xend = beta_new, 
+                        yend = f_prime(beta_new), 
+                        colour = '#FFA812')
+  i <- i + 1
+}
+
+# Print results
+p; i; beta_new
+```
+
+## Experimenting with another function
+Now let's switch to another function known as `Rosenbrock` defined as
+$f(w) = (1−w1)^2 + 100(w2−w21)^2$
+
+```{r}
+# plot contour
+library(plot3D)
+
+x <- seq(-2, 2, length.out = 15)
+y <- seq(-1, 3, length.out = 15)
+
+# Rosenbrock Function
+f1 <- function (x, y) {
+  out <- (1 - x) ** 2 + 100 * (y - x**2)**2
+  return (out)
+}
+
+# get value for z
+z <- outer(x, y, f1)
+
+# Initial Guess
+w_old <- matrix(c(0, 0)); w_new <- matrix(c(-1.8,-.8))
+gamma <- .0002 # set the learning rate
+precision <- .00001 # set the precision
+
+f1_primew1 <- function (w1, w2) {
+  out <- -2 * (1 - w1) - 400 * (w2 - w1**2) * w1
+  return (out)
+}
+f1_primew2 <- function (w1, w2) {
+  out <- 200 * (w2 - w1**2)
+  return (out)
+}
+
+# Gradient Vector
+g_vec <- function (w1, w2) {
+  matrix(c(f1_primew1(w1, w2), f1_primew2(w1, w2)))
+}
+
+# Contour Plot
+contour2D(z = z, x = x, y = y, col = 'black', colkey = FALSE)
+
+i <- 2; 
+cx <- cy <- sx <- sy <- sz <- numeric()
+cx[1] <- w_new[1, ]; 
+cy[1] <- w_new[2, ]
+
+# Perform Gradient Descent
+while(norm(w_new - w_old, 'F') > precision) {
+  w_old <- w_new
+  w_new <- w_old - gamma * g_vec(w_old[1,], w_old[2,])
+  cx[i] <- sx[i - 1] <- w_new[1, ]; cy[i] <- sy[i - 1] <- w_new[2, ]
+  sz[i - 1] <- f1(sx[i - 1], sy[i - 1])
+  arrows2D(cx[i - 1], cy[i - 1], cx[i], cy[i], add = TRUE)
+  i <- i + 1
+}
+i - 2; w_new
+```
+
+Notice that I did not use ggplot for the contour plot, this is because the plot needs to be updated 23,374 times just to accommodate for the arrows for the trajectory of the gradient vectors, and ggplot is just slow. 
+
+Finally, we can also visualize the gradient points on the surface as shown in the following figure.
+
+```{r}
+# plot surface
+library(plot3D)
+
+persp3D(x, y, z, 
+        col = ramp.col(n = 50, 
+                       col = c("#FF033E", "#FFBF00", "#FF7E00", 
+                               "#08E8DE", "#00FFFF", "#03C03C"), 
+                       alpha = .1), 
+        border = "#808080", 
+        theta = 20, 
+        phi = 20, 
+        colkey = FALSE)
+
+contour3D(x, y, z = 0, 
+          colvar = z, 
+          col = c("#FF7E00", "#FF033E"), 
+          alpha = .3, 
+          add = TRUE, 
+          colkey = FALSE)
+
+points3D(sx, sy, sz, 
+         pch = 20, 
+         col = 'black', 
+         add = TRUE)
+```
+
+In my future blog post, I hope to apply this algorithm on statistical models like linear/nonlinear regression models for simple illustration.
