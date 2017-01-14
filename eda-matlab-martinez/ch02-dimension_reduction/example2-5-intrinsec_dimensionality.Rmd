@@ -9,6 +9,7 @@ output: html_notebook
 ```
 
 ```{r fig.asp=1}
+library("plot3D")
 n <- 500
 theta <- runif(n =  n, min = 0, max = 4*pi)
 
@@ -22,7 +23,7 @@ z <- 0.1 * (theta)
 # X = [x(,),y(,),z(,)]
 X <- matrix(c(x, y, z), 500, 3)
 
-library("plot3D")
+
 
 scatter3D(x, y, z,
           col = "blue",
