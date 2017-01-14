@@ -177,7 +177,7 @@ plot(Z[, 1], Z[, 2])
 What about creating a function to imitate what Matlab does with `eig()`
 
 ```{r}
-source("../matlab.R")
+source("../R/matlab.R")
 
 # read the matrix from Matlab table
 x_table <- read.csv('table.csv', header = FALSE)
