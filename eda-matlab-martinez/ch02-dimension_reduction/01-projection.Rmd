@@ -32,6 +32,7 @@ We start with a small data sample:
 X = matrix(c(4, 3, -4, 5), nrow=2, byrow = TRUE)
 X
 ```
+
 The projection angle will be pi/3 in radians:
 ```{r}
 # get theta
@@ -53,7 +54,7 @@ P
 
 
 ```{r}
-source("../matlab.R")
+source("../R/matlab.R")
 
 Xp <- X %*% P
 Xp
