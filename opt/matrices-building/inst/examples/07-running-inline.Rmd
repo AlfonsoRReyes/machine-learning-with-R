@@ -1,0 +1,28 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(Rcpp)
+library(i
+        nline)
+
+src <- '
+     Rcpp::NumericMatrix Am(A);
+     int nrows = Am.nrow();
+     for (int j = 1; j < nrows; j++) {
+         Am(j,_) = Am(j,_) + Am(j-1,_);
+     }
+     return Am;
+ '
+```
+
+
+
+```{r}
+fun <- cxxfunction(signature(A = "numeric"), body = src, plugin="Rcpp")
+fun(matrix(1,4,4))
+```
+
