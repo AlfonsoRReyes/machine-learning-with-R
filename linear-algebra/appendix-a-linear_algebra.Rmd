@@ -1,0 +1,141 @@
+---
+title: "R Notebook"
+output:
+  html_document: default
+  html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
+---
+
+Source: https://www.dropbox.com/s/7letq2x4ue8y15w/A%20Tutorial%20on%20Principal%20Component%20Analysis%20-%201404.1100%5Bpaper%20Matlab%20linear_algebra%5D.pdf?dl=0
+
+
+### Solving equations using matrices of the form $XA = B$
+
+If $XA = B$
+
+We can solve $X$ by multiplying both side of the equation by $A^{-1}$, which yields:
+
+$XAA^{-1} = B A^{-1}$
+
+Since $A A^{-1} = I$, then:
+
+$X I = B A^{-1}$, which after removing the identity matrix $I$, gives:
+
+$X = B A^{-1}$
+
+### The Inverse of $A$ is $A^{-1}$ only when
+
+$A A^{-1} = A^{-1} A = \mathbf I$
+
+### 1. The inverse of an orthogonal matrix is its transpose.
+Let $A$ be an $m \times n$ orthogonal matrix where $a_i$ is the $i^{th}$ column vector. The $ij^{th}$ element of $(A^TA)$ is
+
+$(A^T A)_{ij} = a_i^T a_j =$
+
+ 01 i f i = j otherwise
+
+Also, we know that:
+
+$A A^{-1} = I$
+
+
+
+Therefore, because $A^T A = I$, 
+then $A^T A = A A^{-1}$
+
+it follows that $A^{−1} = A^T$.
+
+
+### 2. For any matrix $A$, $A^T A$ and $AA^T$ are symmetric.
+
+$(AA^T)^T = A^{TT} A^T = AA^T$
+
+$(A^T A)^T = A^T A^{TT} = A^TA$
+
+### 3. A matrix is symmetric if and only if it is orthogonally diagonalizable.
+Because this statement is bi-directional, it requires a two-part
+“if-and-only-if” proof. One needs to prove the forward and
+the backwards “if-then” cases.
+
+Let us start with the forward case. If $A$ is orthogonally di-
+agonalizable, then $A$ is a symmetric matrix. By hypothesis,
+orthogonally diagonalizable means that there exists some $E$
+such that $A = EDE^T$, where $D$ is a diagonal matrix and $E$ is
+some special matrix which diagonalizes $A$. Let us compute
+$A^T$.
+
+$A^T = (EDE^T)^T = E^{TT} D^T E^T = EDE^T = A$
+
+Evidently, if $A$ is orthogonally diagonalizable, it must also be
+symmetric.
+
+The reverse case is more involved and less clean so it will be
+left to the reader. In lieu of this, hopefully the “forward” case
+is suggestive if not somewhat convincing.
+
+### 4. A symmetric matrix is diagonalized by a matrix of its orthonormal eigenvectors.
+Let $A$ be a square $n \times n$ symmetric matrix with associated
+eigenvectors ${e_1, e_2, . . . , e_n}$. Let $E = [e_1 e_2 . . . e_n]$ where the
+$i_{th}$ column of $E$ is the eigenvector $e_i$. This theorem asserts that
+there exists a diagonal matrix $D$ such that $A = EDE^T$ .
+
+This proof is in two parts. In the ﬁrst part, we see that the
+any matrix can be orthogonally diagonalized if and only if
+it that matrix’s eigenvectors are all linearly independent. In
+the second part of the proof, we see that a symmetric matrix
+has the special property that all of its eigenvectors are not just
+linearly independent but also orthogonal, thus completing our
+proof.
+
+In the ﬁrst part of the proof, let $A$ be just some matrix, not
+necessarily symmetric, and let it have independent eigenvec-
+tors (i.e. no degeneracy). Furthermore, let $E = [e_1 e_2 . . . e_n]$
+be the matrix of eigenvectors placed in the columns. Let $D$ be
+a diagonal matrix where the $i_{th}$ eigenvalue is placed in the $ii^{th}$
+position.
+
+We will now show that $AE = ED$. We can examine the
+columns of the right-hand and left-hand sides of the equation.
+
+Left hand side : $AE = [Ae_1 Ae_2 . . . Ae_n]$
+
+Right hand side : $ED = [λ1e_1 λ2e_2 . . . λne_n]$
+
+Evidently, if $AE = ED$ then $Ae_i = λie_i$ for all $i$. This equa-
+tion is the deﬁnition of the eigenvalue equation. Therefore,
+it must be that $AE = ED$. A little rearrangement provides
+$A = EDE^{−1}$, completing the ﬁrst part the proof.
+
+For the second part of the proof, we show that a symmetric
+matrix always has orthogonal eigenvectors. For some sym-
+metric matrix, let $λ1$ and $λ2$ be distinct eigenvalues for eigen-
+vectors $e_1$ and $e_2$.
+
+$$
+λ_1e_1 · e2 = (λ_1e_1)^T e_2 \\
+= (Ae_1)^T e_2 \\
+= e_1^T A^T e_2 \\
+= e_1^T Ae_2 \\
+= e_1^T (λ_2e_2) \\
+λ_1e_1 · e_2 = λ_2e_1 · e_2
+$$
+
+
+By the last relation we can equate that $(λ_1 − λ_2)e_1· e_2 = 0$.
+
+Since we have conjectured that the eigenvalues are in fact
+unique, it must be the case that $e_1 · e_2 = 0$. Therefore, the
+eigenvectors of a symmetric matrix are orthogonal.
+
+Let us back up now to our original postulate that $A$ is a sym-
+metric matrix. By the second part of the proof, we know
+that the eigenvectors of $A$ are all orthonormal (we choose
+the eigenvectors to be normalized). This means that $E$ is an
+orthogonal matrix so by theorem 1, $E^T = E^{−1}$ and we can
+rewrite the ﬁnal result.
+
+$A = EDE^T$
+
+. Thus, a symmetric matrix is diagonalized by a matrix of its
+eigenvectors.

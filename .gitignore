@@ -1,9 +1,9 @@
 .Rproj.user
-.Rhistory
 .RData
 .Ruserdata
 *.html
 *.pdf
 !docs/*.pdf
-gradient_descent-aassad_cache
-gradient_descent-aassad_files
+*_cache
+*_files
+.Rhistory
