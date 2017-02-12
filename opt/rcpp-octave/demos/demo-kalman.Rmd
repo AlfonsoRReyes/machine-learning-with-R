@@ -637,7 +637,7 @@ doPdfPlot()
 ```{r}
 doEpsPlot <- function() {
     setEPS()
-    postscript("./images/kalmanExample.eps")
+    postscript("../../../images/kalmanExample.eps")
     op <- par(mar=c(4,4,1,1))
     plot(pos, col='#A6CEE3', pch=22)
     points(KalmanR(pos), col="#1F78B4", pch=20)
@@ -646,9 +646,11 @@ doEpsPlot <- function() {
     par(op)
     dev.off()
 }
+
+doEpsPlot()
 ```
 
 ```{r}
-doEpsPlot()
+
 ```
 
