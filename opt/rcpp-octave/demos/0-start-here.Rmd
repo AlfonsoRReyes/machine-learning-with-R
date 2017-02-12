@@ -337,6 +337,7 @@ geterrmessage()
 ```{r}
 # warning
 res <- .CallOctave("warning", "this is a warning in Octave")
+res
 ```
 
 ## Comparing R and Octave functions
