@@ -650,7 +650,4 @@ doEpsPlot <- function() {
 doEpsPlot()
 ```
 
-```{r}
-
-```
 
