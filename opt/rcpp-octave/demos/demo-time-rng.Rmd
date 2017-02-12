@@ -55,7 +55,4 @@ res <- benchmark(.O$orndn(N),
 print(res)
 ```
 
-```{r}
-
-```
 
