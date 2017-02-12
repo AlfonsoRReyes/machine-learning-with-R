@@ -9,6 +9,7 @@ require(rbenchmark)
 require(compiler)	
 require(RcppOctave) 
 ```
+
 ```{r}
 ## define a Gamma RNG draw function
 o_source(text="
@@ -16,15 +17,19 @@ o_source(text="
     x = b * randg(a, n, 1);
   end
 ")
+
 N <- 50000
+
 set.seed(42)
+
 x1 <- c(.O$orngg(9,1,N))
 x2 <- c(.O$orngg(4,1,N))
-x3 <- c(.O$orngg(1,4,N))
+x3 <- c(.O$orngg(1,1,N))
+
 set.seed(42)  # reset RNG
 y1 <- rgamma(N,9,1)
 y2 <- rgamma(N,4,1)
-y3 <- rgamma(N,1,1,4)
+y3 <- rgamma(N,1,1)
 
 ```
 
@@ -34,6 +39,7 @@ set.seed(42)
 z1 <- c(.O$randg(9,N,1,1))
 z2 <- c(.O$randg(4,N,1,1))
 z3 <- c(.O$randg(1,N,1,4))
+
 stopifnot(all.equal(x1,z1))
 stopifnot(all.equal(x2,z2))
 stopifnot(all.equal(x3,z3))
