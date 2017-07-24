@@ -613,8 +613,12 @@ c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C")
 ```
 
 ```{r}
+getwd()
+```
+
+```{r}
 doPdfPlot <- function() {
-    pdf("./images/kalmanExample.pdf")
+    pdf("../../../images/kalmanExample.pdf")
     plot(pos, col='#A6CEE3DD', pch=18,
          main="Object Trajectory and Kalman Filter Estimate")
     op <- par(mar=c(4,4,1,1))
@@ -625,16 +629,15 @@ doPdfPlot <- function() {
     par(op)
     dev.off()
 }
-```
 
-```{r}
 doPdfPlot()
 ```
+
 
 ```{r}
 doEpsPlot <- function() {
     setEPS()
-    postscript("./images/kalmanExample.eps")
+    postscript("../../../images/kalmanExample.eps")
     op <- par(mar=c(4,4,1,1))
     plot(pos, col='#A6CEE3', pch=22)
     points(KalmanR(pos), col="#1F78B4", pch=20)
@@ -643,9 +646,8 @@ doEpsPlot <- function() {
     par(op)
     dev.off()
 }
-```
 
-```{r}
 doEpsPlot()
 ```
+
 

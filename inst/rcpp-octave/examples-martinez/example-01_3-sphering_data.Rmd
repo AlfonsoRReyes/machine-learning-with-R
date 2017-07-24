@@ -63,6 +63,7 @@ sphered <- OctaveFunction("function [Z] = sphered(X, n=100)
   % Get the eigenvectors and eigenvalues of the 
   % covariance matrix.
   [V,D] = eig(cov(X));
+  D
 
   % Center the data.
   Xc = X - ones(n,1)*xbar;
