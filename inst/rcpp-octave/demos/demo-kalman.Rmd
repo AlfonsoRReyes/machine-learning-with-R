@@ -574,6 +574,8 @@ pos <- as.matrix(read.table(tc <- textConnection("-4.76074274e-01 8.27344982e-01
 
 
 ```{r}
+library(benchmark)
+
 stopifnot(all.equal(KalmanR(pos), KalmanRC(pos)),
           all.equal(KalmanR(pos), FirstKalmanR(pos)),
           all.equal(KalmanR(pos), FirstKalmanRC(pos)),
